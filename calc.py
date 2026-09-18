@@ -14,3 +14,21 @@ def get_numbers(data):
     except (ValueError,TypeError):
         return None, None, "'a' and 'b' must be in numbers"
     return a,b, None
+def record(operation,a,b,result):
+    """save calculations to history"""
+    history.append({
+        "operation":operation,
+        "a":a,
+        "b":b,
+        "result":result
+    })
+@app.route("/add", method = ["POST"])
+def add():
+    data = request.get_json(silent = True)
+    a, b, error = get_numbers(data)
+    if error:
+        return jsonify({"error":error}),400
+    result = a + b
+    record("add", a, b, result)
+    return jsonify({"result":result}),200
+
